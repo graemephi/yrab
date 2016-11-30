@@ -1,0 +1,14 @@
+{
+    "name": "Remove Youtube Recommendations",
+    "version": "1.0",
+    "manifest_version": 2,
+    "description": "Youtube recommendations are bad.",
+    "content_scripts": [{
+        "js": ["script.js"],
+        "matches": ["*://*.youtube.com/*", "*://youtube.com/*"],
+        "run_at": "document_start"
+    }],
+    "icons": {
+        "128": "icon.png"
+    }
+}
