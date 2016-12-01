@@ -5,6 +5,7 @@
  */
 
  (function() {
+
 "use strict";
 
 function isRecommendedVideo(video, selector) {
@@ -19,8 +20,8 @@ function removeRecommendedVideos(parent, isPolymer) {
 
     for (var i = 0; i < videos.length; i++) {
         if (isRecommendedVideo(videos[i], selector)) {
-          videos[i].style.display = "none";
-          atleastOneVideoRemoved = true;
+            videos[i].style.display = "none";
+            atleastOneVideoRemoved = true;
         }
     }
 
