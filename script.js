@@ -4,6 +4,7 @@
  * publish, and distribute this file as you see fit.
  */
 
+ (function() {
 "use strict";
 
 function isRecommendedVideo(video, selector) {
@@ -56,3 +57,5 @@ new MutationObserver((mutations) => {
         }
     }
 }).observe(document, { childList: true , subtree: true });
+
+})();
