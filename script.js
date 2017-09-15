@@ -4,9 +4,14 @@
  * publish, and distribute this file as you see fit.
  */
 
- (function() {
+ /*
+  * 1.1: Fix missing recs when watching a playlist.
+  * 1.0: Initial release.
+  */
 
 "use strict";
+
+var sidebar = null;
 
 function isRecommendedVideo(video, selector) {
     let viewCount = video.querySelector(selector);
@@ -15,7 +20,7 @@ function isRecommendedVideo(video, selector) {
 
 function removeRecommendedVideos(parent, isPolymer) {
     let videos = parent.children;
-    let selector = isPolymer ? "span.style-scope.ytd-video-meta-block" : "span.stat.view-count"
+    let selector = isPolymer ? "span.style-scope.ytd-video-meta-block" : "span.stat.view-count";
     var atleastOneVideoRemoved = false;
 
     for (var i = 0; i < videos.length; i++) {
@@ -29,16 +34,16 @@ function removeRecommendedVideos(parent, isPolymer) {
 }
 
 function getSidebar() {
-    let sidebar = document.getElementById("watch-related");
-
-    if (sidebar) {
-        return { element: sidebar, isPolymer: false };
-    }
-
-    let newSidebar = document.getElementById("items");
+    let newSidebar = document.querySelector("#items.ytd-watch-next-secondary-results-renderer");
 
     if (newSidebar) {
         return { element: newSidebar, isPolymer: true };
+    }
+
+    let oldSidebar = document.getElementById("watch-related");
+
+    if (oldSidebar) {
+        return { element: oldSidebar, isPolymer: false };
     }
 
     return null;
@@ -47,16 +52,17 @@ function getSidebar() {
 var throttle = false;
 new MutationObserver((mutations) => {
     if (!throttle) {
-        let sidebar = getSidebar();
+        sidebar = sidebar || getSidebar();
 
         if (sidebar) {
             throttle = removeRecommendedVideos(sidebar.element, sidebar.isPolymer);
 
             if (throttle) {
-                requestAnimationFrame(() => throttle = false);
+                requestAnimationFrame(() => {
+                    throttle = false;
+                    sidebar = null;
+                });
             }
         }
     }
-}).observe(document, { childList: true , subtree: true });
-
-})();
+}).observe(document, { childList: true, subtree: true });
