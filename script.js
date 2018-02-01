@@ -5,27 +5,45 @@
  */
 
  /*
+  * 1.2: Fix hiding the up next video in the polymer design, even if it's recommended.
+  *      Fix an issue that caused videos loaded from the 'load more' button to not be
+  *      hidden, or even hide the whole extra videos div
+  *
   * 1.1: Fix missing recs when watching a playlist.
   * 1.0: Initial release.
   */
 
 "use strict";
 
-var sidebar = null;
+const VideoSelector_Classic = ":scope li.video-list-item";
+
+const RecommendedSelector_Polymer = "ytd-compact-video-renderer #metadata-line span.style-scope.ytd-video-meta-block";
+const RecommendedSelector_Classic = ":scope span.stat.view-count";
+
+let sidebar = null;
 
 function isRecommendedVideo(video, selector) {
     let viewCount = video.querySelector(selector);
-    return viewCount && /Recommended for you/.test(viewCount.innerHTML);
+    return viewCount && (viewCount.innerHTML.indexOf("Recommended for you") >= 0);
 }
 
 function removeRecommendedVideos(parent, isPolymer) {
-    let videos = parent.children;
-    let selector = isPolymer ? "span.style-scope.ytd-video-meta-block" : "span.stat.view-count";
-    var atleastOneVideoRemoved = false;
+    let videos = null;
+    let selector = null;
 
-    for (var i = 0; i < videos.length; i++) {
-        if (isRecommendedVideo(videos[i], selector)) {
-            videos[i].style.display = "none";
+    if (isPolymer) {
+        videos = parent.children;
+        selector = RecommendedSelector_Polymer;
+    } else {
+        videos = parent.querySelectorAll(VideoSelector_Classic);
+        selector = RecommendedSelector_Classic;
+    }
+
+    let atleastOneVideoRemoved = false;
+    for (let i = 0; i < videos.length; i++) {
+        let video = videos[i];
+        if (isRecommendedVideo(video, selector)) {
+            video.style.display = "none";
             atleastOneVideoRemoved = true;
         }
     }
@@ -49,7 +67,7 @@ function getSidebar() {
     return null;
 }
 
-var throttle = false;
+let throttle = false;
 new MutationObserver((mutations) => {
     if (!throttle) {
         sidebar = sidebar || getSidebar();
