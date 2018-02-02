@@ -17,14 +17,18 @@
 
 const VideoSelector_Classic = ":scope li.video-list-item";
 
-const RecommendedSelector_Polymer = "ytd-compact-video-renderer #metadata-line span.style-scope.ytd-video-meta-block";
+const RecommendedSelector_Polymer = ":scope #metadata-line span.style-scope.ytd-video-meta-block";
 const RecommendedSelector_Classic = ":scope span.stat.view-count";
 
 let sidebar = null;
 
 function isRecommendedVideo(video, selector) {
-    let viewCount = video.querySelector(selector);
-    return viewCount && (viewCount.innerHTML.indexOf("Recommended for you") >= 0);
+    if (video.tagName !== "YTD-COMPACT-AUTOPLAY-RENDERER") {
+        let viewCount = video.querySelector(selector);
+        return viewCount && (viewCount.innerHTML.indexOf("Recommended for you") >= 0);
+    }
+
+    return false;
 }
 
 function removeRecommendedVideos(parent, isPolymer) {
@@ -42,7 +46,7 @@ function removeRecommendedVideos(parent, isPolymer) {
     let atleastOneVideoRemoved = false;
     for (let i = 0; i < videos.length; i++) {
         let video = videos[i];
-        if (isRecommendedVideo(video, selector)) {
+        if ((video.style.display !== "none") && isRecommendedVideo(video, selector)) {
             video.style.display = "none";
             atleastOneVideoRemoved = true;
         }
