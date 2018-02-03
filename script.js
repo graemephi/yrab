@@ -5,12 +5,12 @@
  */
 
  /*
-  * 1.2: Fix hiding the up next video in the polymer design, even if it's recommended.
+  * 1.2 (February 2 2018): Fix hiding the up next video in the polymer design, even if it's recommended.
   *      Fix an issue that caused videos loaded from the 'load more' button to not be
   *      hidden, or even hide the whole extra videos div
   *
-  * 1.1: Fix missing recs when watching a playlist.
-  * 1.0: Initial release.
+  * 1.1 (September 15 2017): Fix missing recs when watching a playlist.
+  * 1.0 (November 30 2016): Initial release.
   */
 
 "use strict";
