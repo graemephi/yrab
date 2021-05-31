@@ -4,87 +4,16 @@
  * publish, and distribute this file as you see fit.
  */
 
- /*
-  * 1.2 (February 2 2018): Fix hiding the up next video in the polymer design, even if it's recommended.
-  *      Fix an issue that caused videos loaded from the 'load more' button to not be
-  *      hidden, or even hide the whole extra videos div
-  *
-  * 1.1 (September 15 2017): Fix missing recs when watching a playlist.
-  * 1.0 (November 30 2016): Initial release.
-  */
-
-"use strict";
-
-const VideoSelector_Classic = ":scope li.video-list-item";
-
-const RecommendedSelector_Polymer = ":scope #metadata-line span.style-scope.ytd-video-meta-block";
-const RecommendedSelector_Classic = ":scope span.stat.view-count";
-
-let sidebar = null;
-
-function isRecommendedVideo(video, selector) {
-    if (video.tagName !== "YTD-COMPACT-AUTOPLAY-RENDERER") {
-        let viewCount = video.querySelector(selector);
-        return viewCount && (viewCount.innerHTML.indexOf("Recommended for you") >= 0);
-    }
-
-    return false;
-}
-
-function removeRecommendedVideos(parent, isPolymer) {
-    let videos = null;
-    let selector = null;
-
-    if (isPolymer) {
-        videos = parent.children;
-        selector = RecommendedSelector_Polymer;
-    } else {
-        videos = parent.querySelectorAll(VideoSelector_Classic);
-        selector = RecommendedSelector_Classic;
-    }
-
-    let atleastOneVideoRemoved = false;
-    for (let i = 0; i < videos.length; i++) {
-        let video = videos[i];
-        if ((video.style.display !== "none") && isRecommendedVideo(video, selector)) {
-            video.style.display = "none";
-            atleastOneVideoRemoved = true;
-        }
-    }
-
-    return atleastOneVideoRemoved;
-}
-
-function getSidebar() {
-    let newSidebar = document.querySelector("#items.ytd-watch-next-secondary-results-renderer");
-
-    if (newSidebar) {
-        return { element: newSidebar, isPolymer: true };
-    }
-
-    let oldSidebar = document.getElementById("watch-related");
-
-    if (oldSidebar) {
-        return { element: oldSidebar, isPolymer: false };
-    }
-
-    return null;
-}
-
-let throttle = false;
-new MutationObserver((mutations) => {
-    if (!throttle) {
-        sidebar = sidebar || getSidebar();
-
-        if (sidebar) {
-            throttle = removeRecommendedVideos(sidebar.element, sidebar.isPolymer);
-
-            if (throttle) {
-                requestAnimationFrame(() => {
-                    throttle = false;
-                    sidebar = null;
-                });
-            }
-        }
-    }
-}).observe(document, { childList: true, subtree: true });
+/*
+ * 1.3 (May 31 2021): 'Fix' high CPU usage during chat-heavy live streams.
+ *     This extension is now useless as youtube no longer has these recommendations. This update is
+ *     for anyone who still has it installed, as this extension may now interact badly with current-day youtube
+ *     and removing it from the webstore does not remove it from their browsers.
+ *
+ * 1.2 (February 2 2018): Fix hiding the up next video in the polymer design, even if it's recommended.
+ *      Fix an issue that caused videos loaded from the 'load more' button to not be
+ *      hidden, or even hide the whole extra videos div
+ *
+ * 1.1 (September 15 2017): Fix missing recs when watching a playlist.
+ * 1.0 (November 30 2016): Initial release.
+ */
